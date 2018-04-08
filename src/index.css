@@ -1,0 +1,9 @@
+.checked {
+	text-decoration: line-through;
+	font-style: italic;
+	text-decoration-color: red;
+}
+
+.unchecked {
+	font-weight: bold;
+}
