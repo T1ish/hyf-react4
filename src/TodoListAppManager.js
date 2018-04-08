@@ -4,14 +4,16 @@ import TodoFetch from './TodoFetch';
 
 class TodoListAppManager extends React.Component{
 	render() {
-		const { todoText, updateTodoText, addTodoItem, refreshData, error, todos, updateTodoItem, deleteTodoItem } = this.props;
+		const { todoText, todoDate, updateTodoText, addTodoItem, refreshData, error, todos, updateTodoItem, deleteTodoItem, updateTodoDate } = this.props;
 		return(
 			<div>
 				<h1>Todo List!</h1>
 				<TodoAdd 
 					todoText={todoText} 
+					todoDate={todoDate}
 					updateTodoText={updateTodoText} 
 					addTodoItem={addTodoItem}
+					updateTodoDate={updateTodoDate}
 				/>
 				<hr />
 				<TodoFetch 

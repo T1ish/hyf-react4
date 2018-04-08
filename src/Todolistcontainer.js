@@ -1,13 +1,16 @@
 import React from 'react';
 import TodoListAppManager from './TodoListAppManager';
 
+const API_URL = 'http://hyf-react-api.herokuapp.com/todos';
+
 class TodoListContainer extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
 			todos: [],
 			error: '',
-			todoText: ''
+			todoText: '',
+			todoDate: ''
 		};
 		this.fetchData = this.fetchData.bind(this);
 		this.refreshData = this.refreshData.bind(this);
@@ -15,6 +18,7 @@ class TodoListContainer extends React.Component{
 		this.updateTodoText = this.updateTodoText.bind(this);
 		this.deleteTodoItem = this.deleteTodoItem.bind(this);
 		this.addTodoItem = this.addTodoItem.bind(this);
+		this.updateTodoDate = this.updateTodoDate.bind(this);
 
 	}
 
@@ -22,8 +26,11 @@ class TodoListContainer extends React.Component{
 		this.setState({ todoText: event.target.value });
 	}
 
+	updateTodoDate(event){
+		this.setState({ todoDate: event.target.value });
+	}
 
-	//Works for the checkbox
+	//Works for the checkbox only, didn't implement changing the text but same kind of function.
 	updateTodoItem(todoId){
 		//Remember we are working with an array and not an object
 		//so it's different than how it was in class.
@@ -31,7 +38,7 @@ class TodoListContainer extends React.Component{
 		const newTodo = {...oldTodo, done: !oldTodo.done}
 		const newTodos = this.state.todos;
 		newTodos[todoId] = newTodo;
-		fetch(`http://hyf-react-api.herokuapp.com/todos/${newTodo._id}`, 
+		fetch(`${API_URL}/${newTodo._id}`, 
   			{ 
   				method: 'PATCH', 
   				body: JSON.stringify(newTodo),
@@ -45,25 +52,22 @@ class TodoListContainer extends React.Component{
     	.catch(err => err);
 	}
 
-
-	//Delete works fine, no need to test this one anymore.
 	deleteTodoItem(todoId){
 		const oldTodo = this.state.todos[todoId];
-		//Theline down under is wrong to use since it makes a new reference to the same array,
+		//The line below is wrong to use since it makes a new reference to the same array,
 		//meaning you are changing the state which should be immutable!
 		//const newTodos = this.state.todos;
 		// Use instead the spread function which clones the state and put it into a new array:
 		const newTodos = [...this.state.todos];
 		newTodos.splice(todoId, 1);
-		fetch(`http://hyf-react-api.herokuapp.com/todos/${oldTodo._id}`, 
+		fetch(`${API_URL}/${oldTodo._id}`, 
   			{ 
   				method: 'DELETE',
   			})
   		.then(
 	  		this.setState( {todos: newTodos} )
   			)
-    	.catch(err => err);
-		
+    	.catch(err => err);	
 	}
 
 
@@ -72,14 +76,12 @@ class TodoListContainer extends React.Component{
   	}
 
 
-  	//POST works fine, no need to test this one anymore.
   	addTodoItem(){
-  		const date = document.getElementById("deadlineDate").value;
-  		const { todoText } = this.state;
-  		const newTodo = { description: todoText, deadline: date };
+  		const { todoText, todoDate } = this.state;
+  		const newTodo = { description: todoText, deadline: todoDate };
   		const newTodos = this.state.todos;
   		newTodos.push(newTodo);
-  		fetch(`http://hyf-react-api.herokuapp.com/todos/create`, {
+  		fetch(`${API_URL}/create`, {
   			method: 'POST',
   			body: JSON.stringify(newTodo),
   			headers: new Headers({
@@ -88,12 +90,11 @@ class TodoListContainer extends React.Component{
   		})
   		.then(this.setState({ todos: newTodos }))
   		.catch(err => err);
-
   	}
 
 
   	fetchData(){
-  		fetch(`http://hyf-react-api.herokuapp.com/todos`)
+  		fetch(`${API_URL}`)
 			.then((response) => response.json())
 			.then((body) => {
 				this.setState({
@@ -111,10 +112,11 @@ class TodoListContainer extends React.Component{
 
 
 	render(){
-		const { todos, error, todoText } = this.state;
+		const { todos, error, todoText, todoDate } = this.state;
 		return(
 			<TodoListAppManager 
 				todoText={todoText} 
+				todoDate={todoDate}
 				updateTodoText={this.updateTodoText} 
 				addTodoItem={this.addTodoItem}  
 				refreshData={this.refreshData}
@@ -122,6 +124,7 @@ class TodoListContainer extends React.Component{
 				todos={todos}
 				updateTodoItem={this.updateTodoItem}
 				deleteTodoItem={this.deleteTodoItem}
+				updateTodoDate={this.updateTodoDate}
 			/>
 			);
 	}

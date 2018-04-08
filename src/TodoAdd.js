@@ -2,11 +2,11 @@ import React from 'react';
 
 class TodoAdd extends React.Component{
 	render(){
-		const { todoText, updateTodoText, addTodoItem } = this.props;
+		const { todoText, todoDate, updateTodoText, addTodoItem, updateTodoDate } = this.props;
 		return(
 			<div>
 				<input type='text' value={todoText} onChange={updateTodoText}/>
-				<input type="date" name="deadlineDate" id="deadlineDate"/>
+				<input type="date" name="deadlineDate" onChange={updateTodoDate} value={todoDate}/>
 				<button onClick={addTodoItem}>Post</button>
 			</div>
 			);
