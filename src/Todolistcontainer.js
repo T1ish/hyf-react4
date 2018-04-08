@@ -23,7 +23,7 @@ class Todolistcontainer extends React.Component{
 	}
 
 
-	//Do not work - dunno why
+	//Works for the checkbox
 	updateTodoItem(todoId){
 		//Remember we are working with an array and not an object
 		//so it's different than how it was in class.
