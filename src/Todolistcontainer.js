@@ -1,7 +1,7 @@
 import React from 'react';
-import Todolist from './Todolist';
+import TodoListAppManager from './TodoListAppManager';
 
-class Todolistcontainer extends React.Component{
+class TodoListContainer extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
@@ -49,7 +49,11 @@ class Todolistcontainer extends React.Component{
 	//Delete works fine, no need to test this one anymore.
 	deleteTodoItem(todoId){
 		const oldTodo = this.state.todos[todoId];
-		const newTodos = this.state.todos;
+		//Theline down under is wrong to use since it makes a new reference to the same array,
+		//meaning you are changing the state which should be immutable!
+		//const newTodos = this.state.todos;
+		// Use instead the spread function which clones the state and put it into a new array:
+		const newTodos = [...this.state.todos];
 		newTodos.splice(todoId, 1);
 		fetch(`http://hyf-react-api.herokuapp.com/todos/${oldTodo._id}`, 
   			{ 
@@ -71,7 +75,7 @@ class Todolistcontainer extends React.Component{
   	//POST works fine, no need to test this one anymore.
   	addTodoItem(){
   		const date = document.getElementById("deadlineDate").value;
-  		const { todos, todoText } = this.state;
+  		const { todoText } = this.state;
   		const newTodo = { description: todoText, deadline: date };
   		const newTodos = this.state.todos;
   		newTodos.push(newTodo);
@@ -108,32 +112,19 @@ class Todolistcontainer extends React.Component{
 
 	render(){
 		const { todos, error, todoText } = this.state;
-		return(<div>
-				<h1>Todo List!</h1>
-				<div>
-					<input type='text' value={todoText} onChange={this.updateTodoText}/>
-					<input type="date" name="deadlineDate" id="deadlineDate"/>
-					<button onClick={this.addTodoItem}>Post</button>
-
-				</div>
-				<hr />
-				<div>
-					<button onClick={this.refreshData}>Refresh</button>
-					{
-	         			 error && <h3 className='error-msg'>error: { error }</h3>
-	        		}
-					{
-						todos && 
-
-						<Todolist updateTodoItem={this.updateTodoItem} deleteTodoItem={this.deleteTodoItem} todos={todos}/>
-					}
-					{
-	          			!todos && !error && <p>No todos, sorry!</p>
-	        		}
-        		</div>
-			</div>);
+		return(
+			<TodoListAppManager 
+				todoText={todoText} 
+				updateTodoText={this.updateTodoText} 
+				addTodoItem={this.addTodoItem}  
+				refreshData={this.refreshData}
+				error={error}
+				todos={todos}
+				updateTodoItem={this.updateTodoItem}
+				deleteTodoItem={this.deleteTodoItem}
+			/>
+			);
 	}
 }
 
-
-export default Todolistcontainer;
+export default TodoListContainer;

@@ -1,7 +1,7 @@
 import React from 'react';
 import Todo from './Todo'
 
-class Todolist extends React.Component{
+class TodoList extends React.Component{
 
 	render(){
 		const {todos, updateTodoItem, deleteTodoItem} = this.props;
@@ -25,4 +25,4 @@ class Todolist extends React.Component{
 	}
 }
 
-export default Todolist;
+export default TodoList;
